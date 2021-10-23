@@ -12,6 +12,8 @@ build/Release
 node_modules/
 jspm_packages/
 
+.aws-sam
+
 # TypeScript v1 declaration files
 typings/
 

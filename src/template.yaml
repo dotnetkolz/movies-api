@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Movies api
+
+Resources:
+  MoviesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        # Read from parameters
+        TableName: movies
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        
+  MoviesLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName : MoviesLambdaRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"  
+      Description: "IAM Role for WM Movies API"
+      Path: "/"
+      Policies:
+        - PolicyName: MobileDynamoDbAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:DescribeTable"
+                - "dynamodb:PutItem"
+                - "dynamodb:UpdateItem"
+                - "dynamodb:DeleteItem"
+                Resource:
+                  - Fn::Sub: "arn:aws:dynamodb:*:${AWS::AccountId}:table/movies*"
+  MoviesTestFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: MoviesLambdaRole
+    Properties:
+      CodeUri: ./
+      Handler: index.test
+      Runtime: nodejs12.x
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      Policies:
+      - "AWSLambdaBasicExecutionRole"
+      Events:
+        MoviesTest:
+          Type: Api 
+          Properties:
+            Path: /movies/test
+            Method: get
+  MoviesAddFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: MoviesLambdaRole
+    Properties:
+      CodeUri: ./
+      Handler: index.add
+      Runtime: nodejs12.x
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      Policies:
+      - "AWSLambdaBasicExecutionRole"
+      Events:
+        MoviesTest:
+          Type: Api 
+          Properties:
+            Path: /movies
+            Method: post
+  MoviesGetFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: MoviesLambdaRole
+    Properties:
+      CodeUri: ./
+      Handler: index.get
+      Runtime: nodejs12.x
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      Policies:
+      - "AWSLambdaBasicExecutionRole"
+      Events:
+        MoviesTest:
+          Type: Api 
+          Properties:
+            Path: /movies/{id}
+            Method: get
+Outputs:
+  MoviesTestApi:
+    Description: "API Gateway endpoint URL for Prod stage for Movies Test function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/test"
+  MoviesGetApi:
+    Description: "API Gateway endpoint URL for Prod stage for Movies Add function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
+  MoviesAddApi:
+    Description: "API Gateway endpoint URL for Prod stage for Movies Get function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/"
