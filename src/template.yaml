@@ -18,7 +18,20 @@ Resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        
+
+  MovieTestLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/aws/lambda/movies-api-movieTest"
+  MovieAddLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/aws/lambda/movies-api-movieAdd"
+  MovieGetLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/aws/lambda/movies-api-movieGet"
+
   MoviesLambdaRole:
     Type: AWS::IAM::Role
     Properties:
@@ -50,13 +63,32 @@ Resources:
                 - "dynamodb:DeleteItem"
                 Resource:
                   - Fn::Sub: "arn:aws:dynamodb:*:${AWS::AccountId}:table/movies*"
+        - PolicyName: LogAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                - "logs:CreateLogStream"
+                - "logs:CreateLogGroup"
+                Resource:
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*"
+              - Effect: "Allow"
+                Action:
+                - "logs:PutLogEvents"
+                Resource:
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*:*"
+
   MoviesTestFunction:
     Type: AWS::Serverless::Function
-    DependsOn: MoviesLambdaRole
+    DependsOn: 
+      - MoviesLambdaRole
+      - MovieTestLogGroup
     Properties:
       CodeUri: ./
       Handler: index.test
       Runtime: nodejs12.x
+      FunctionName: movies-api-movieTest
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -68,11 +100,14 @@ Resources:
             Method: get
   MoviesAddFunction:
     Type: AWS::Serverless::Function
-    DependsOn: MoviesLambdaRole
+    DependsOn: 
+      - MoviesLambdaRole
+      - MovieTestLogGroup
     Properties:
       CodeUri: ./
       Handler: index.add
       Runtime: nodejs12.x
+      FunctionName: movies-api-movieAdd
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -84,11 +119,14 @@ Resources:
             Method: post
   MoviesGetFunction:
     Type: AWS::Serverless::Function
-    DependsOn: MoviesLambdaRole
+    DependsOn: 
+      - MoviesLambdaRole
+      - MovieTestLogGroup
     Properties:
       CodeUri: ./
       Handler: index.get
       Runtime: nodejs12.x
+      FunctionName: movies-api-movieGet
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -107,4 +145,4 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
   MoviesAddApi:
     Description: "API Gateway endpoint URL for Prod stage for Movies Get function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
