@@ -19,10 +19,6 @@ Resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
-  MovieTestLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: "/aws/lambda/movies-api-movieTest"
   MovieAddLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -86,6 +82,7 @@ Resources:
                 - "logs:PutLogEvents"
                 Resource:
                   - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*:*"
+  
   MoviesGetFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
