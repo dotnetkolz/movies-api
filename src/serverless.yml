@@ -1,0 +1,28 @@
+service: movies-api
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: us-east-1
+
+functions:
+  movieAdd:
+    handler: index.add
+    memorySize: 128
+    description: Add movie info.
+    events:
+      - http: 
+          path: movies
+          method: post
+  movieGet:
+    handler: index.get
+    memorySize: 128
+    description: Get movie info.
+    events:
+      - http:
+          path: movies/{id}
+          method: get
