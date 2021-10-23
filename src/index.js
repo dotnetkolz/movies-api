@@ -1,6 +1,9 @@
 'use strict';
 
-module.exports.test = (event, context, callback) => {
+const AWS = require('aws-sdk');
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+module.exports.test = async (event, context, callback) => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
@@ -13,26 +16,67 @@ module.exports.test = (event, context, callback) => {
 
 };
 
-module.exports.add = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Add executed successfully!'
-    }),
-  };
+module.exports.add = async (event, context, callback) => {
+  try {
 
-  callback(null, response);
+    const requestBody = JSON.parse(event.body);
+    console.log("Movie Request - ", requestBody);
 
+    const movieInfo = {
+      TableName: "movies",
+      Item: requestBody,
+    };
+    const result = await dynamoDb.put(movieInfo).promise();
+    callback(null, {
+      statusCode: 201,
+      body: JSON.stringify({
+        message: `Sucessfully added movie - ${requestBody.title}`
+      })
+    });
+
+  } catch (ex) {
+
+    console.log("Add Error > ", ex);
+    callback(null, {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: `Unable to add movie - ${requestBody.title}`,
+        error: ex
+      })
+    });
+  }
 };
 
-module.exports.get = (event, context, callback) => {
+module.exports.get = async (event, context, callback) => {
 
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: 'Get executed successfully!'
-      }),
+  try {
+    const params = {
+      TableName: "movies",
+      Key: {
+        id: event.pathParameters.id,
+      },
     };
-  
-    callback(null, response);
+    const response = await dynamoDb.get(params).promise();
+    console.log("Get response >> ", response);
+    if(!response.Item) {
+      callback(null, {
+        statusCode: 204
+      });
+    } else {
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify(response.Item)
+      });
+    }
+    
+  } catch (ex) {
+    console.log("Get Error > ", ex);
+    callback(null, {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: `Unable to get movie - ${event.pathParameters.id}`,
+        error: ex
+      })
+    });
+  }
 };
