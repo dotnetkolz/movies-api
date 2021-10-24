@@ -1,6 +1,10 @@
 # Titles API
 API to manage title collection
 
+## Architecture Diagram
+
+[Wiki](https://github.com/dotnetkolz/wm-movies-api/wiki/Arch-Diagram)
+
 ## Installation
 
 To run this application you will need to install [SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
