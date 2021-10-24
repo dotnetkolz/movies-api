@@ -103,7 +103,7 @@ All APIs need below authorization header to work
 
 ### GET - /titles/{id}
 
-https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
+URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 **Response -**
 
@@ -135,7 +135,7 @@ Returned when id is not found. Depending on the use case we can either return 40
 
 ### POST (Add) - /titles
 
-https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
+URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
 
 **Request -**
 
@@ -180,7 +180,7 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
 
 ### PUT (Update) - /titles/{id}
 
-https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
+URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 **Request -**
 
@@ -225,7 +225,7 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 ### DELETE - /titles/{id}
 
-https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
+URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 **Response -**
 
