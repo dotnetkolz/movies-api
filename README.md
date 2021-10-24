@@ -42,7 +42,7 @@ sam deploy --guided --template-file template.yaml
 
 This will create the initial deployment setup. Follow the instructions as below.
 
-```bash
+```
 	Looking for config file [samconfig.toml] :  Found
 	Reading default arguments  :  Success
 
@@ -61,13 +61,13 @@ This will create the initial deployment setup. Follow the instructions as below.
 
 This will trigger a update on `samconfig.toml` file. Make sure to update `capabilities` as below
 
-```bash
+```
     capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 ```
 
 The updated `samconfig.toml` should look like below
 
-```bash
+```
     version = 0.1
 
     [prod.deploy.parameters]
@@ -103,7 +103,7 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Response -
 
-`
+```json
 {
   "id": "23adc",
   "releaseDate": "2012-01-12",
@@ -113,7 +113,7 @@ Response -
   ],
   "title": "Terminator 2"
 }
-`
+```
 
 ### POST (Add) - /titles
 
@@ -121,7 +121,7 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
 
 Request -
 
-`
+```json
 {
   "id": "23adc",
   "releaseDate": "2012-01-12",
@@ -131,15 +131,15 @@ Request -
   ],
   "title": "Terminator 2"
 }
-`
+```
 
 Response -
 
-`
+```json
 {
   "message": "Sucessfully added title - Terminator 2"
 }
-`
+```
 
 ### PUT (Update) - /titles/{id}
 
@@ -147,7 +147,7 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Request -
 
-`
+```json
 {
   "releaseDate": "2012-01-12",
   "genres": [
@@ -156,15 +156,15 @@ Request -
   ],
   "title": "Terminator 2"
 }
-`
+```
 
 Response -
 
-`
+```json
 {
   "message": "Sucessfully updated title - Terminator 2"
 }
-`
+```
 
 ### DELETE - /titles/{id}
 
