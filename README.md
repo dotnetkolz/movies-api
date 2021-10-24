@@ -139,6 +139,14 @@ Returned when id is not found. Depending on the use case we can either return 40
 }
 ```
 
+**401**
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
 ### POST (Add) - /titles
 
 URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
@@ -181,6 +189,14 @@ URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
 {
   "message": "Unable to add title - T2",
   "errorCode": "WM_TITLE_101"
+}
+```
+
+**401**
+
+```json
+{
+  "message": "Unauthorized"
 }
 ```
 
@@ -229,6 +245,14 @@ URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 }
 ```
 
+**401**
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
 ### DELETE - /titles/{id}
 
 URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
@@ -252,5 +276,13 @@ URL - https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 {
   "message": "Invalid title",
   "errorCode": "WM_TITLE_105"
+}
+```
+
+**401**
+
+```json
+{
+  "message": "Unauthorized"
 }
 ```
