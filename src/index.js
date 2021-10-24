@@ -3,10 +3,15 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
+/**
+ * Get movie title from dynamodb
+ * @param {string} id 
+ * @returns title object
+ */
 const getMovie = async (id) => {
   try {
     const params = {
-      TableName: "movies",
+      TableName: "wm_titles",
       Key: {
         id: id,
       },
@@ -19,10 +24,15 @@ const getMovie = async (id) => {
   return false;
 }
 
+/**
+ * Adds movie title to dynamodb
+ * @param {object} request 
+ * @returns 
+ */
 const addMovie = async (request) => {
   try {
     const params = {
-      TableName: "movies",
+      TableName: "wm_titles",
       Item: {
         id: request.id,
         title: request.title,
@@ -40,11 +50,17 @@ const addMovie = async (request) => {
   return false;
 }
 
+/**
+ * Update movie title 
+ * @param {string} id 
+ * @param {object} request 
+ * @returns 
+ */
 const updateMovie = async (id, request) => {
 
   try {
     const params = {
-      TableName: "movies",
+      TableName: "wm_titles",
       Item: {
         id: id,
         title: request.title,
@@ -65,7 +81,7 @@ const updateMovie = async (id, request) => {
 const deleteMovie = async (id) => {
   try {
     const params = {
-      TableName: "movies",
+      TableName: "wm_titles",
       Key: {
         id: id,
       },

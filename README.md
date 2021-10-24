@@ -1,5 +1,5 @@
-# Movies API
-API to manage movie collection
+# Titles API
+API to manage title collection
 
 ## Installation
 
@@ -40,7 +40,7 @@ This will create the initial deployment setup. Follow the instructions as below.
 
 	Setting default arguments for 'sam deploy'
 	=========================================
-	Stack Name [sam-app]: movies-api
+	Stack Name [sam-app]: wm-title-api
 	AWS Region [us-east-1]:
 	#Shows you resources changes to be deployed and require a 'Y' to initiate deploy
 	Confirm changes before deploy [y/N]: y
@@ -64,9 +64,9 @@ The updated `samconfig.toml` should look like below
 
     [prod.deploy.parameters]
     template_file = "template.yaml"
-    stack_name = "movies-api"
+    stack_name = "wm-title-api"
     s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-hdc9z77js1ct"
-    s3_prefix = "movies-api"
+    s3_prefix = "wm-title-api"
     region = "us-east-1"
     confirm_changeset = true
     capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
@@ -89,9 +89,9 @@ All APIs need below authorization header to work
 `authorization: Basic =random-creds`
 
 
-### GET - /movies/{id}
+### GET - /titles/{id}
 
-https://{apigateway}/Prod/movies/23adc
+https://{apigateway}/Prod/titles/23adc
 
 Response -
 
@@ -107,9 +107,9 @@ Response -
 }
 `
 
-### POST (Add) - /movies
+### POST (Add) - /titles
 
-https://{apigateway}/Prod/movies
+https://{apigateway}/Prod/titles
 
 Request -
 
@@ -129,13 +129,13 @@ Response -
 
 `
 {
-  "message": "Sucessfully added movie - Terminator 2"
+  "message": "Sucessfully added title - Terminator 2"
 }
 `
 
-### PUT (Update) - /movies/{id}
+### PUT (Update) - /titles/{id}
 
-https://{apigateway}/Prod/movies/23adc
+https://{apigateway}/Prod/titles/23adc
 
 Request -
 
@@ -154,12 +154,12 @@ Response -
 
 `
 {
-  "message": "Sucessfully updated movie - Terminator 2"
+  "message": "Sucessfully updated title - Terminator 2"
 }
 `
 
-### DELETE - /movies/{id}
+### DELETE - /titles/{id}
 
-https://{apigateway}/Prod/movies/23adc
+https://{apigateway}/Prod/titles/23adc
 
 Response - 200

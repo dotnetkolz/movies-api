@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Movies api
+Description: WM Titles api
 
 Resources:
   BasicAuthDynamoDbTable:
@@ -19,12 +19,12 @@ Resources:
           ReadCapacityUnits: 2
           WriteCapacityUnits: 2
 
-  MoviesDynamoDbTable:
+  TitlesDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
       Properties:
         # Read from parameters
-        TableName: movies
+        TableName: wm_titles
         AttributeDefinitions:
           - AttributeName: "id"
             AttributeType: "S"   
@@ -38,28 +38,28 @@ Resources:
   AuthLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/movies-auth"
-  MovieAddLogGroup:
+      LogGroupName: "/aws/lambda/titles-auth"
+  TitleAddLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/movies-api-movieAdd"
-  MovieUpdateLogGroup:
+      LogGroupName: "/aws/lambda/titles-api-add"
+  TitleUpdateLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/movies-api-movieUpdate"
-  MovieDeleteLogGroup:
+      LogGroupName: "/aws/lambda/titles-api-update"
+  TitleDeleteLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/movies-api-movieDelete"
-  MovieGetLogGroup:
+      LogGroupName: "/aws/lambda/titles-api-delete"
+  TitleGetLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: "/aws/lambda/movies-api-movieGet"
+      LogGroupName: "/aws/lambda/titles-api-get"
 
-  MoviesLambdaRole:
+  TitlesLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName : MoviesLambdaRole
+      RoleName : TitlesLambdaRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -69,10 +69,10 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - "sts:AssumeRole"  
-      Description: "IAM Role for WM Movies API"
+      Description: "IAM Role for WM Title API"
       Path: "/"
       Policies:
-        - PolicyName: MoviesDynamoDbAccess
+        - PolicyName: TitleDynamoDbAccess
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -86,7 +86,7 @@ Resources:
                 - "dynamodb:UpdateItem"
                 - "dynamodb:DeleteItem"
                 Resource:
-                  - Fn::Sub: "arn:aws:dynamodb:*:${AWS::AccountId}:table/movies*"
+                  - Fn::Sub: "arn:aws:dynamodb:*:${AWS::AccountId}:table/wm_titles*"
         - PolicyName: LogAccess
           PolicyDocument:
             Version: "2012-10-17"
@@ -96,12 +96,12 @@ Resources:
                 - "logs:CreateLogStream"
                 - "logs:CreateLogGroup"
                 Resource:
-                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*"
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/titles-api*:*"
               - Effect: "Allow"
                 Action:
                 - "logs:PutLogEvents"
                 Resource:
-                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*:*"
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/titles-api*:*:*"
 
   AuthLambdaRole:
     Type: AWS::IAM::Role
@@ -116,10 +116,10 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - "sts:AssumeRole"  
-      Description: "IAM Role for WM Movies API"
+      Description: "IAM Role for WM Title API"
       Path: "/"
       Policies:
-        - PolicyName: MoviesAuthDynamoDbAccess
+        - PolicyName: TitlesAuthDynamoDbAccess
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -144,7 +144,7 @@ Resources:
                 - "logs:CreateLogGroup"
                 - "logs:PutLogEvents"
                 Resource:
-                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-auth*"
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/titles-auth*"
               
   AuthFunction:
     Type: AWS::Serverless::Function
@@ -155,12 +155,12 @@ Resources:
       CodeUri: ./
       Handler: auth.handler
       Runtime: nodejs12.x
-      FunctionName: movies-auth
+      FunctionName: titles-auth
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/AuthLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
   
-  MoviesApi:
+  TitlesApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
@@ -170,100 +170,100 @@ Resources:
           LambdaTokenAuthorizer:
             FunctionArn: !GetAtt AuthFunction.Arn
 
-  MoviesGetFunction:
+  TitlesGetFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
-      - MoviesLambdaRole
-      - MovieGetLogGroup
+      - TitlesLambdaRole
+      - TitleGetLogGroup
     Properties:
       CodeUri: ./
       Handler: index.get
       Runtime: nodejs12.x
-      FunctionName: movies-api-movieGet
-      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      FunctionName: titles-api-get
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
       Events:
-        MoviesGet:
+        TitlesGet:
           Type: Api 
           Properties:
-            RestApiId: !Ref MoviesApi
-            Path: /movies/{id}
+            RestApiId: !Ref TitlesApi
+            Path: /titles/{id}
             Method: get
             
-  MoviesAddFunction:
+  TitlesAddFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
-      - MoviesLambdaRole
-      - MovieAddLogGroup
+      - TitlesLambdaRole
+      - TitleAddLogGroup
     Properties:
       CodeUri: ./
       Handler: index.add
       Runtime: nodejs12.x
-      FunctionName: movies-api-movieAdd
-      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      FunctionName: titles-api-add
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
       Events:
-        MoviesAdd:
+        TitlesAdd:
           Type: Api 
           Properties:
-            RestApiId: !Ref MoviesApi
-            Path: /movies
+            RestApiId: !Ref TitlesApi
+            Path: /titles
             Method: post
 
-  MoviesUpdateFunction:
+  TitlesUpdateFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
-      - MoviesLambdaRole
-      - MovieUpdateLogGroup
+      - TitlesLambdaRole
+      - TitleUpdateLogGroup
     Properties:
       CodeUri: ./
       Handler: index.update
       Runtime: nodejs12.x
-      FunctionName: movies-api-movieUpdate
-      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      FunctionName: titles-api-update
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
       Events:
-        MoviesUpdate:
+        TitlesUpdate:
           Type: Api 
           Properties:
-            RestApiId: !Ref MoviesApi
-            Path: /movies/{id}
+            RestApiId: !Ref TitlesApi
+            Path: /titles/{id}
             Method: put
 
-  MoviesDeleteFunction:
+  TitlesDeleteFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
-      - MoviesLambdaRole
-      - MovieDeleteLogGroup
+      - TitlesLambdaRole
+      - TitleDeleteLogGroup
     Properties:
       CodeUri: ./
       Handler: index.delete
       Runtime: nodejs12.x
-      FunctionName: movies-api-movieDelete
-      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/MoviesLambdaRole"
+      FunctionName: titles-api-delete
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
       Events:
-        MoviesDelete:
+        TitlesDelete:
           Type: Api 
           Properties:
-            RestApiId: !Ref MoviesApi
-            Path: /movies/{id}
+            RestApiId: !Ref TitlesApi
+            Path: /titles/{id}
             Method: delete
 
 Outputs:
-  MoviesGetApi:
-    Description: "API Gateway endpoint URL for Prod stage for Movies Add function"
-    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
-  MoviesAddApi:
-    Description: "API Gateway endpoint URL for Prod stage for Movies Get function"
-    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
-  MoviesUpdateApi:
-    Description: "API Gateway endpoint URL for Prod stage for Movies Update function"
-    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
-  MoviesDeleteApi:
-    Description: "API Gateway endpoint URL for Prod stage for Movies Delete function"
-    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
+  TitlesGetApi:
+    Description: "API Gateway endpoint URL for Prod stage for Titles Add function"
+    Value: !Sub "https://${TitlesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/titles/{id}"
+  TitlesAddApi:
+    Description: "API Gateway endpoint URL for Prod stage for Titles Get function"
+    Value: !Sub "https://${TitlesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/titles"
+  TitlesUpdateApi:
+    Description: "API Gateway endpoint URL for Prod stage for Titles Update function"
+    Value: !Sub "https://${TitlesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/titles/{id}"
+  TitlesDeleteApi:
+    Description: "API Gateway endpoint URL for Prod stage for Titles Delete function"
+    Value: !Sub "https://${TitlesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/titles/{id}"

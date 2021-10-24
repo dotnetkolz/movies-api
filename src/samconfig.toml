@@ -2,9 +2,9 @@ version = 0.1
 
 [prod.deploy.parameters]
 template_file = "template.yaml"
-stack_name = "movies-api"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-hdc9z77js1ct"
-s3_prefix = "movies-api"
+stack_name = "wm-title-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1n5kvp5oxv398"
+s3_prefix = "wm-title-api"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"

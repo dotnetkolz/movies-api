@@ -49,6 +49,11 @@ const setInitialCreds = async () => {
 
 }
 
+/**
+ * Build lambda auth success policy
+ * @param {*} event 
+ * @returns Policy
+ */
 const buildAllowAuthResponse = (event) => {
     let tmp = event.methodArn.split(":");
 
