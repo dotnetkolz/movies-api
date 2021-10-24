@@ -1,9 +1,11 @@
 # Title API
 API to manage title collection
 
-## Architecture Diagram
+## Architecture
 
-[Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram)
+This repo uses CloudFormation with AWS SAM to build and deploy Node API
+
+Follow [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram) for Infrastructure/Architecture diagram
 
 ## Installation
 
@@ -88,7 +90,7 @@ For all the subsequent deployment run below commands
 
 ## Usage
 
-This api exposes 4 endpoints, these endpoints will be provided after the deployment id complete.
+This api exposes 4 endpoints, these endpoints will be provided after the deployment is complete.
 
 All APIs need below authorization header to work
 
