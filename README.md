@@ -92,7 +92,7 @@ For all the subsequent deployment run below commands
     sam deploy --config-env prod
 ```
 
-## Usage
+## REST API Endpoints
 
 This api exposes 4 endpoints, these endpoints will be provided after the deployment is complete.
 
