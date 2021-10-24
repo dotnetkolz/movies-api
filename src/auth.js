@@ -93,7 +93,7 @@ const buildAllowAuthResponse = (event) => {
 
 /**
  * Authorizer lambda handler
- * This lambda only does plain text validation for this excersize
+ * This lambda only does plain text validation for this exercise
  * This can be replaced with Base64 basic authorizer, Okta authorizer or Azure authorizer
  * @param {*} event 
  * @param {*} context 
