@@ -67,7 +67,7 @@ This will trigger a update on `samconfig.toml` file. Make sure to update `capabi
 
 The updated `samconfig.toml` should look like below
 
-```
+```t
     version = 0.1
 
     [prod.deploy.parameters]
