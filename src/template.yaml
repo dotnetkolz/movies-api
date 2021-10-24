@@ -156,6 +156,9 @@ Resources:
       Handler: auth.handler
       Runtime: nodejs12.x
       FunctionName: titles-auth
+      Environment:
+        Variables:
+          AUTH_TABLE: wm_basic_auth
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/AuthLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -180,6 +183,9 @@ Resources:
       Handler: index.get
       Runtime: nodejs12.x
       FunctionName: titles-api-get
+      Environment:
+        Variables:
+          TITLES_TABLE: wm_titles
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -201,6 +207,9 @@ Resources:
       Handler: index.add
       Runtime: nodejs12.x
       FunctionName: titles-api-add
+      Environment:
+        Variables:
+          TITLES_TABLE: wm_titles
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -222,6 +231,9 @@ Resources:
       Handler: index.update
       Runtime: nodejs12.x
       FunctionName: titles-api-update
+      Environment:
+        Variables:
+          TITLES_TABLE: wm_titles
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"
@@ -243,6 +255,9 @@ Resources:
       Handler: index.delete
       Runtime: nodejs12.x
       FunctionName: titles-api-delete
+      Environment:
+        Variables:
+          TITLES_TABLE: wm_titles
       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/TitlesLambdaRole"
       Policies:
       - "AWSLambdaBasicExecutionRole"

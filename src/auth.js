@@ -11,7 +11,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const getCreds = async (type) => {
     try {
         const params = {
-            TableName: "wm_basic_auth",
+            TableName: process.env.AUTH_TABLE,
             Key: {
                 key: type,
             },
@@ -33,7 +33,7 @@ const setInitialCreds = async () => {
 
         if(!creds || !creds.Item) {
             const params = {
-                TableName: "wm_basic_auth",
+                TableName: process.env.AUTH_TABLE,
                 Item: {
                   key: "basic",
                   value: "=random-creds"

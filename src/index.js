@@ -11,7 +11,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const getTitle = async (id) => {
   try {
     const params = {
-      TableName: "wm_titles",
+      TableName: process.env.TITLES_TABLE,
       Key: {
         id: id,
       },
@@ -32,7 +32,7 @@ const getTitle = async (id) => {
 const addTitle = async (request) => {
   try {
     const params = {
-      TableName: "wm_titles",
+      TableName: process.env.TITLES_TABLE,
       Item: {
         id: request.id,
         title: request.title,
@@ -60,7 +60,7 @@ const updateTitle = async (id, request) => {
 
   try {
     const params = {
-      TableName: "wm_titles",
+      TableName: process.env.TITLES_TABLE,
       Item: {
         id: id,
         title: request.title,
@@ -81,7 +81,7 @@ const updateTitle = async (id, request) => {
 const deleteTitle = async (id) => {
   try {
     const params = {
-      TableName: "wm_titles",
+      TableName: process.env.TITLES_TABLE,
       Key: {
         id: id,
       },
