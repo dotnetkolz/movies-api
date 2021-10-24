@@ -91,10 +91,17 @@ const buildAllowAuthResponse = (event) => {
     return policy;
 }
 
+/**
+ * Authorizer lambda handler
+ * @param {*} event 
+ * @param {*} context 
+ * @param {*} callback 
+ * @returns 
+ */
 module.exports.handler = async (event, context, callback) => {
     // Set up initial credentials 
     // ideally this will be stored in secret manager and will be rotated regularly
-    // this only for this exercize to validate request
+    // this is only for this exercize to validate request
     await setInitialCreds();
 
     const authHeader = event.authorizationToken;

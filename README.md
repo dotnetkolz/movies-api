@@ -107,6 +107,8 @@ https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Response -
 
+**200**
+
 ```json
 {
   "id": "23adc",
@@ -116,6 +118,18 @@ Response -
     "Si-fi"
   ],
   "title": "Terminator 2"
+}
+```
+**204**
+
+Returned when id is not found. Depending on the use case we can either return 400 or 404 as well.
+
+**500**
+
+```json
+{
+  "message": "Unable to get title - T2",
+  "errorCode": "WM_TITLE_100"
 }
 ```
 
@@ -139,9 +153,28 @@ Request -
 
 Response -
 
+**201**
+
 ```json
 {
   "message": "Sucessfully added title - Terminator 2"
+}
+```
+
+**200**
+
+```json
+{
+  "message": "Title already exists"
+}
+```
+
+**500**
+
+```json
+{
+  "message": "Unable to add title - T2",
+  "errorCode": "WM_TITLE_101"
 }
 ```
 
@@ -164,9 +197,29 @@ Request -
 
 Response -
 
+**200**
+
 ```json
 {
   "message": "Sucessfully updated title - Terminator 2"
+}
+```
+
+**500**
+
+```json
+{
+  "message": "Unable to update title - T2",
+  "errorCode": "WM_TITLE_102"
+}
+```
+
+**400**
+
+```json
+{
+  "message": "Invalid title",
+  "errorCode": "WM_TITLE_103"
 }
 ```
 
@@ -174,4 +227,24 @@ Response -
 
 https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
-Response - 200
+Response - 
+
+**200**
+
+**500**
+
+```json
+{
+  "message": "Unable to delete title",
+  "errorCode": "WM_TITLE_104"
+}
+```
+
+**400**
+
+```json
+{
+  "message": "Invalid title",
+  "errorCode": "WM_TITLE_105"
+}
+```

@@ -78,6 +78,11 @@ const updateTitle = async (id, request) => {
   return false;
 }
 
+/**
+ * Deletes a title from dynamo based on id
+ * @param {string} id 
+ * @returns boolean status
+ */
 const deleteTitle = async (id) => {
   try {
     const params = {
@@ -93,6 +98,8 @@ const deleteTitle = async (id) => {
 
   return false;
 }
+
+// Lambda Methods
 module.exports.get = async (event, context, callback) => {
   const response = await getTitle(event.pathParameters.id);
 
@@ -119,6 +126,12 @@ module.exports.get = async (event, context, callback) => {
   }
 };
 
+/**
+ * Titles Get Lambda Handler
+ * @param {*} event 
+ * @param {*} context 
+ * @param {*} callback 
+ */
 module.exports.add = async (event, context, callback) => {
   const requestBody = JSON.parse(event.body);
   const dbTitle = await getTitle(requestBody.id);
@@ -157,6 +170,12 @@ module.exports.add = async (event, context, callback) => {
   }
 };
 
+/**
+ * Titles Update Lambda Handler
+ * @param {*} event 
+ * @param {*} context 
+ * @param {*} callback 
+ */
 module.exports.update = async (event, context, callback) => {
   const dbTitle = await getTitle(event.pathParameters.id);
 
@@ -193,6 +212,12 @@ module.exports.update = async (event, context, callback) => {
   }
 };
 
+/**
+ * Titles Delete Lambda Handler
+ * @param {*} event 
+ * @param {*} context 
+ * @param {*} callback 
+ */
 module.exports.delete = async (event, context, callback) => {
   const response = await getTitle(event.pathParameters.id);
 
