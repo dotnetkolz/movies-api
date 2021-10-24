@@ -105,7 +105,7 @@ All APIs need below authorization header to work
 
 https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
-Response -
+**Response -**
 
 **200**
 
@@ -137,7 +137,7 @@ Returned when id is not found. Depending on the use case we can either return 40
 
 https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles
 
-Request -
+**Request -**
 
 ```json
 {
@@ -151,7 +151,7 @@ Request -
 }
 ```
 
-Response -
+**Response -**
 
 **201**
 
@@ -182,7 +182,7 @@ Response -
 
 https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
-Request -
+**Request -**
 
 ```json
 {
@@ -195,7 +195,7 @@ Request -
 }
 ```
 
-Response -
+**Response -**
 
 **200**
 
@@ -227,7 +227,7 @@ Response -
 
 https://{restapiid}.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
-Response - 
+**Response - **
 
 **200**
 
