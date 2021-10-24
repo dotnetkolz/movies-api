@@ -8,7 +8,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * @param {string} id 
  * @returns title object
  */
-const getMovie = async (id) => {
+const getTitle = async (id) => {
   try {
     const params = {
       TableName: "wm_titles",
@@ -29,7 +29,7 @@ const getMovie = async (id) => {
  * @param {object} request 
  * @returns 
  */
-const addMovie = async (request) => {
+const addTitle = async (request) => {
   try {
     const params = {
       TableName: "wm_titles",
@@ -56,7 +56,7 @@ const addMovie = async (request) => {
  * @param {object} request 
  * @returns 
  */
-const updateMovie = async (id, request) => {
+const updateTitle = async (id, request) => {
 
   try {
     const params = {
@@ -78,7 +78,7 @@ const updateMovie = async (id, request) => {
   return false;
 }
 
-const deleteMovie = async (id) => {
+const deleteTitle = async (id) => {
   try {
     const params = {
       TableName: "wm_titles",
@@ -94,15 +94,15 @@ const deleteMovie = async (id) => {
   return false;
 }
 module.exports.get = async (event, context, callback) => {
-  const response = await getMovie(event.pathParameters.id);
+  const response = await getTitle(event.pathParameters.id);
 
   console.log("Get response >> ", response);
   if (!response) {
     callback(null, {
       statusCode: 500,
       body: JSON.stringify({
-        message: `Unable to get movie - ${event.pathParameters.id}`,
-        errorCode: "WM_MOVIE_100"
+        message: `Unable to get title - ${event.pathParameters.id}`,
+        errorCode: "WM_TITLE_100"
       })
     });
   }
@@ -121,36 +121,36 @@ module.exports.get = async (event, context, callback) => {
 
 module.exports.add = async (event, context, callback) => {
   const requestBody = JSON.parse(event.body);
-  const dbMovie = await getMovie(requestBody.id);
+  const dbTitle = await getTitle(requestBody.id);
 
-  // If movie already exists in Db - do nothing
-  if (dbMovie && dbMovie.Item) {
+  // If title already exists in Db - do nothing
+  if (dbTitle && dbTitle.Item) {
     callback(null, {
       statusCode: 200,
       body: JSON.stringify({
-        message: `Movie already exists`
+        message: "Title already exists"
       })
     });
   }
-  // Else add movie to Db
+  // Else add title to Db
   else {
-    console.log("Add movie request - ", requestBody);
-    const status = await addMovie(requestBody);
+    console.log("Add title request - ", requestBody);
+    const status = await addTitle(requestBody);
 
-    // If movie added give 201 else give a 500
+    // If title added give 201 else give a 500
     if (status) {
       callback(null, {
         statusCode: 201,
         body: JSON.stringify({
-          message: `Sucessfully added movie - ${requestBody.title}`
+          message: `Sucessfully added title - ${requestBody.title}`
         })
       });
     } else {
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
-          message: `Unable to add movie - ${requestBody.title}`,
-          errorCode: "WM_MOVIE_101"
+          message: `Unable to add title - ${requestBody.title}`,
+          errorCode: "WM_TITLE_101"
         })
       });
     }
@@ -158,26 +158,26 @@ module.exports.add = async (event, context, callback) => {
 };
 
 module.exports.update = async (event, context, callback) => {
-  const dbMovie = await getMovie(event.pathParameters.id);
+  const dbTitle = await getTitle(event.pathParameters.id);
 
   // Update only if exists
-  if (dbMovie && dbMovie.Item) {
+  if (dbTitle && dbTitle.Item) {
     const requestBody = JSON.parse(event.body);
-    const status = await updateMovie(event.pathParameters.id, requestBody);
-    // If movie added give 201 else give a 500
+    const status = await updateTitle(event.pathParameters.id, requestBody);
+    // If title added give 201 else give a 500
     if (status) {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify({
-          message: `Sucessfully updated movie - ${requestBody.title}`
+          message: `Sucessfully updated title - ${requestBody.title}`
         })
       });
     } else {
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
-          message: `Unable to update movie - ${requestBody.title}`,
-          errorCode: "WM_MOVIE_102"
+          message: `Unable to update title - ${requestBody.title}`,
+          errorCode: "WM_TITLE_102"
         })
       });
     }
@@ -186,18 +186,18 @@ module.exports.update = async (event, context, callback) => {
     callback(null, {
       statusCode: 400,
       body: JSON.stringify({
-        message: "Invalid movie",
-        errorCode: "WM_MOVIE_103"
+        message: "Invalid title",
+        errorCode: "WM_TITLE_103"
       })
     });
   }
 };
 
 module.exports.delete = async (event, context, callback) => {
-  const response = await getMovie(event.pathParameters.id);
+  const response = await getTitle(event.pathParameters.id);
 
   if (response && response.Item) {
-    const status = await deleteMovie(event.pathParameters.id);
+    const status = await deleteTitle(event.pathParameters.id);
 
     if (status) {
       callback(null, {
@@ -207,8 +207,8 @@ module.exports.delete = async (event, context, callback) => {
       callback(null, {
         statusCode: 500,
         body: JSON.stringify({
-          message: `Unable to delete movie`,
-          errorCode: "WM_MOVIE_104"
+          message: `Unable to delete title`,
+          errorCode: "WM_TITLE_104"
         })
       });
     }
@@ -217,8 +217,8 @@ module.exports.delete = async (event, context, callback) => {
   callback(null, {
     statusCode: 400,
     body: JSON.stringify({
-      message: `Invalid movie`,
-      errorCode: "WM_MOVIE_105"
+      message: `Invalid title`,
+      errorCode: "WM_TITLE_105"
     })
   });
 };

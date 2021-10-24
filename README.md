@@ -3,7 +3,7 @@ API to manage title collection
 
 ## Architecture Diagram
 
-[Wiki](https://github.com/dotnetkolz/wm-movies-api/wiki/Arch-Diagram)
+[Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram)
 
 ## Installation
 
@@ -16,7 +16,7 @@ Please follow installation instruction in the [Link](https://docs.aws.amazon.com
 Run below command to clone the repo
 
 ```bash
-git clone https://github.com/dotnetkolz/wm-movies-api.git
+git clone https://github.com/dotnetkolz/wm-title-api.git
 ```
 
 ## Build
