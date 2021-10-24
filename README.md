@@ -29,7 +29,7 @@ git clone https://github.com/dotnetkolz/wm-title-api.git
 
 ## Build
 
-Run SAM Build to build the project
+Run SAM Build to build the project. This will package all JS files and template and create deployable unit for each lambda in `template.yaml` file.
 
 ```bash
 cd src
@@ -38,7 +38,7 @@ sam build
 
 ## Deploy
 
-Run sam deploy in guided mode
+Run sam deploy in guided mode.
 
 ```bash
 sam deploy --guided --template-file template.yaml
@@ -63,7 +63,9 @@ This will create the initial deployment setup. Follow the instructions as below.
 	SAM configuration environment [default]: prod
 ```
 
-This will trigger a update on `samconfig.toml` file. Make sure to update `capabilities` as below
+This will trigger a update on `samconfig.toml` file. Make sure to update `capabilities` as below.
+
+We need `CAPABILITY_NAMED_IAM` to create custom role from the template to give more granulated access.
 
 ```
     capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
@@ -77,7 +79,7 @@ The updated `samconfig.toml` should look like below
     [prod.deploy.parameters]
     template_file = "template.yaml"
     stack_name = "wm-title-api"
-    s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-hdc9z77js1ct"
+    s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-<WillChange>"
     s3_prefix = "wm-title-api"
     region = "us-east-1"
     confirm_changeset = true
@@ -85,7 +87,11 @@ The updated `samconfig.toml` should look like below
     image_repositories = []
 ```
 
-For all the subsequent deployment run below commands
+Once deployed, this will create 2 CloudFormation deployments, `aws-sam-cli-managed-default` and `wm-title-api`. 
+
+The S3 bucket created in `aws-sam-cli-managed-default` will be used to save the lambda packages.
+
+For all the subsequent deployment run below commands. This will first build the project if any updates in JS files and deploy them to AWS.
 
 ```bash
     sam build
