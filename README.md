@@ -1,4 +1,4 @@
-# Titles API
+# Title API
 API to manage title collection
 
 ## Architecture Diagram
