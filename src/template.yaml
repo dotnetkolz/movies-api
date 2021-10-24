@@ -3,6 +3,22 @@ Transform: AWS::Serverless-2016-10-31
 Description: Movies api
 
 Resources:
+  BasicAuthDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        # Read from parameters
+        TableName: wm_basic_auth
+        AttributeDefinitions:
+          - AttributeName: "key"
+            AttributeType: "S"   
+        KeySchema:
+          - AttributeName: "key"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+
   MoviesDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -19,6 +35,10 @@ Resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
+  AuthLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: "/aws/lambda/movies-auth"
   MovieAddLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -52,7 +72,7 @@ Resources:
       Description: "IAM Role for WM Movies API"
       Path: "/"
       Policies:
-        - PolicyName: MobileDynamoDbAccess
+        - PolicyName: MoviesDynamoDbAccess
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -82,12 +102,79 @@ Resources:
                 - "logs:PutLogEvents"
                 Resource:
                   - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-api*:*:*"
+
+  AuthLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName : AuthLambdaRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - "sts:AssumeRole"  
+      Description: "IAM Role for WM Movies API"
+      Path: "/"
+      Policies:
+        - PolicyName: MoviesAuthDynamoDbAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                - "dynamodb:GetItem"
+                - "dynamodb:Scan"
+                - "dynamodb:Query"
+                - "dynamodb:DescribeTable"
+                # Ideally authorizer should not have add/update/delete access to the keys
+                # This is only for the purpose of automating basic auth table initial values
+                - "dynamodb:PutItem"
+                Resource:
+                  - Fn::Sub: "arn:aws:dynamodb:*:${AWS::AccountId}:table/wm_basic_auth*"
+        - PolicyName: LogAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                - "logs:CreateLogStream"
+                - "logs:CreateLogGroup"
+                - "logs:PutLogEvents"
+                Resource:
+                  - Fn::Sub: "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/movies-auth*"
+              
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    DependsOn: 
+      - AuthLambdaRole
+      - AuthLogGroup
+    Properties:
+      CodeUri: ./
+      Handler: auth.handler
+      Runtime: nodejs12.x
+      FunctionName: movies-auth
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/AuthLambdaRole"
+      Policies:
+      - "AWSLambdaBasicExecutionRole"
   
+  MoviesApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: LambdaTokenAuthorizer
+        Authorizers:
+          LambdaTokenAuthorizer:
+            FunctionArn: !GetAtt AuthFunction.Arn
+
   MoviesGetFunction:
     Type: AWS::Serverless::Function
     DependsOn: 
       - MoviesLambdaRole
-      - MovieTestLogGroup
+      - MovieGetLogGroup
     Properties:
       CodeUri: ./
       Handler: index.get
@@ -100,6 +187,7 @@ Resources:
         MoviesGet:
           Type: Api 
           Properties:
+            RestApiId: !Ref MoviesApi
             Path: /movies/{id}
             Method: get
             
@@ -107,7 +195,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: 
       - MoviesLambdaRole
-      - MovieTestLogGroup
+      - MovieAddLogGroup
     Properties:
       CodeUri: ./
       Handler: index.add
@@ -120,6 +208,7 @@ Resources:
         MoviesAdd:
           Type: Api 
           Properties:
+            RestApiId: !Ref MoviesApi
             Path: /movies
             Method: post
 
@@ -127,7 +216,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: 
       - MoviesLambdaRole
-      - MovieTestLogGroup
+      - MovieUpdateLogGroup
     Properties:
       CodeUri: ./
       Handler: index.update
@@ -140,6 +229,7 @@ Resources:
         MoviesUpdate:
           Type: Api 
           Properties:
+            RestApiId: !Ref MoviesApi
             Path: /movies/{id}
             Method: put
 
@@ -147,7 +237,7 @@ Resources:
     Type: AWS::Serverless::Function
     DependsOn: 
       - MoviesLambdaRole
-      - MovieTestLogGroup
+      - MovieDeleteLogGroup
     Properties:
       CodeUri: ./
       Handler: index.delete
@@ -160,19 +250,20 @@ Resources:
         MoviesDelete:
           Type: Api 
           Properties:
+            RestApiId: !Ref MoviesApi
             Path: /movies/{id}
             Method: delete
 
 Outputs:
   MoviesGetApi:
     Description: "API Gateway endpoint URL for Prod stage for Movies Add function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
+    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
   MoviesAddApi:
     Description: "API Gateway endpoint URL for Prod stage for Movies Get function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
+    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies"
   MoviesUpdateApi:
     Description: "API Gateway endpoint URL for Prod stage for Movies Update function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
+    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
   MoviesDeleteApi:
     Description: "API Gateway endpoint URL for Prod stage for Movies Delete function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
+    Value: !Sub "https://${MoviesApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/movies/{id}"
