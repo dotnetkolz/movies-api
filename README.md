@@ -1,11 +1,11 @@
 # Title API
-API to manage title collection
+NODE Js API to manage Title collection
 
 ## Architecture
 
 This repo uses CloudFormation with AWS SAM to build and deploy Node API
 
-Follow [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram) for Infrastructure/Architecture diagram.
+Follow [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Architecture-Diagram) for Infrastructure/Architecture diagram.
 
 ## Cloud Formation
 
