@@ -5,7 +5,11 @@ API to manage title collection
 
 This repo uses CloudFormation with AWS SAM to build and deploy Node API
 
-Follow [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram) for Infrastructure/Architecture diagram
+Follow [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Arch-Diagram) for Infrastructure/Architecture diagram.
+
+## Cloud Formation
+
+Check the [Wiki](https://github.com/dotnetkolz/wm-title-api/wiki/Cloud-Formation) to understand every resource in `template.yaml` file.
 
 ## Installation
 
