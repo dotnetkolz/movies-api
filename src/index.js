@@ -170,7 +170,8 @@ module.exports.update = async (event, context, callback) => {
     callback(null, {
       statusCode: 400,
       body: JSON.stringify({
-        message: `Invalid movie`
+        message: "Invalid movie",
+        errorCode: "WM_MOVIE_103"
       })
     });
   }
@@ -201,7 +202,7 @@ module.exports.delete = async (event, context, callback) => {
     statusCode: 400,
     body: JSON.stringify({
       message: `Invalid movie`,
-      errorCode: "WM_MOVIE_103"
+      errorCode: "WM_MOVIE_105"
     })
   });
 };
