@@ -82,12 +82,12 @@ For all the subsequent deployment run below commands
 
 ## Usage
 
-This api exposes 4 endpoints, these endpoints will be provided after the deployment id complete
+This api exposes 4 endpoints, these endpoints will be provided after the deployment id complete.
 
-`GET  - Get movie by id`
-`POST - Add movie info`
-`PUT  - Update movie info by id`
-`DELETE - Delete movie info by id`
+All APIs need below authorization header to work
+
+`authorization: Basic =random-creds`
+
 
 ### GET - /movies/{id}
 
