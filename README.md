@@ -11,6 +11,8 @@ To run this application you will need to install [SAM](https://docs.aws.amazon.c
 
 Please follow installation instruction in the [Link](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
+Configuring AWS Identity and Access Management (IAM) permissions.
+
 ## Clone
 
 Run below command to clone the repo
@@ -95,7 +97,7 @@ All APIs need below authorization header to work
 
 ### GET - /titles/{id}
 
-https://{apigateway}/Prod/titles/23adc
+https://<restapiid>.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Response -
 
@@ -113,7 +115,7 @@ Response -
 
 ### POST (Add) - /titles
 
-https://{apigateway}/Prod/titles
+https://<restapiid>.execute-api.us-east-1.amazonaws.com/Prod/titles
 
 Request -
 
@@ -139,7 +141,7 @@ Response -
 
 ### PUT (Update) - /titles/{id}
 
-https://{apigateway}/Prod/titles/23adc
+https://<restapiid>.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Request -
 
@@ -164,6 +166,6 @@ Response -
 
 ### DELETE - /titles/{id}
 
-https://{apigateway}/Prod/titles/23adc
+https://<restapiid>.execute-api.us-east-1.amazonaws.com/Prod/titles/23adc
 
 Response - 200
